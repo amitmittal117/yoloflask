@@ -1,3 +1,4 @@
+import cv2
 from ultralytics import YOLO
 import os
 import tempfile
@@ -62,8 +63,24 @@ def detect_video():
 
     # Save the detected video with an updated filename
     name, ext = os.path.splitext(video_file.filename)
+    if ext.lower() not in [".mp4", ".avi", ".mov"]:  # Ensure a supported video format
+        ext = ".mp4"  # Default to MP4
     updated_filename = f"{name}_updated{ext}"
     save_path = os.path.join(temp_dir, updated_filename)
+    if not results[0].save(filename=save_path):  # Check if OpenCV can save
+        logging.error(f"Failed to save video. Trying alternative method.")
+        save_path = os.path.join(temp_dir, f"{name}_updated.mp4")  # Default MP4 format
+        fourcc = cv2.VideoWriter_fourcc(*'mp4v')  # Use MP4 codec
+        frame_size = (640, 480)  # Change based on your video resolution
+        fps = 30  # Adjust based on the input video
+
+        out = cv2.VideoWriter(save_path, fourcc, fps, frame_size)
+        
+        for frame in results[0].frames:
+            out.write(frame)
+        
+        out.release()
+
     results[0].save(filename=save_path)
     logging.info(f"Processed video saved at {save_path}")
     

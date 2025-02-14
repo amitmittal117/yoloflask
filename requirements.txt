@@ -2,4 +2,4 @@ flask
 ultralytics
 torch
 gunicorn
-# opencv-python
+opencv-python-headless

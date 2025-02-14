@@ -11,3 +11,11 @@ service:
   type: NodePort
   port: 5000
   nodePort: 30200
+
+resources:
+  limits:
+    cpu: "4"
+    memory: "8Gi"
+  requests:
+    cpu: "2"
+    memory: "4Gi"
