@@ -1,15 +1,13 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "yolo-chart.fullname" . }}
-  labels:
-    {{- include "yolo-chart.labels" . | nindent 4 }}
+  name: {{ .Release.Name }}-service
 spec:
   type: {{ .Values.service.type }}
-  ports:
-    - port: {{ .Values.service.port }}
-      targetPort: http
-      protocol: TCP
-      name: http
   selector:
-    {{- include "yolo-chart.selectorLabels" . | nindent 4 }}
+    app: {{ .Values.appName }}
+  ports:
+    - protocol: TCP
+      port: {{ .Values.service.port }}
+      targetPort: {{ .Values.container.port }}
+      nodePort: {{ .Values.service.nodePort }}
